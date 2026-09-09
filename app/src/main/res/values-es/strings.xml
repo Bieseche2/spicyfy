@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Spicyfy</string>
+
+    <string name="nav_home">Inicio</string>
+    <string name="nav_search">Buscar</string>
+    <string name="nav_now_playing">Reproduciendo</string>
+    <string name="nav_library">Biblioteca</string>
+
+    <string name="home_greeting">Buenas noches</string>
+    <string name="home_section_made_for_you">Hecho para ti</string>
+    <string name="home_section_followed_artists">Artistas que sigues</string>
+    <string name="home_section_continue_listening">Seguir escuchando</string>
+
+    <string name="search_hint">Canciones, artistas o playlists</string>
+    <string name="search_moods_title">Explorar por ambiente</string>
+
+    <string name="lyrics_show">MOSTRAR LETRA</string>
+    <string name="lyrics_hide">OCULTAR LETRA</string>
+</resources>

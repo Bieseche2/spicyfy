@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Spicyfy" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">#E8A33D</item>
+        <item name="colorPrimaryVariant">#C1440E</item>
+        <item name="android:colorBackground">#17110D</item>
+        <item name="colorSurface">#221A14</item>
+        <item name="colorOnBackground">#FBF3E7</item>
+        <item name="colorOnSurface">#FBF3E7</item>
+    </style>
+</resources>
