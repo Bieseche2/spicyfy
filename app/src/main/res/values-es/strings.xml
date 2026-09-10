@@ -17,4 +17,6 @@
 
     <string name="lyrics_show">MOSTRAR LETRA</string>
     <string name="lyrics_hide">OCULTAR LETRA</string>
+
+    <string name="library_empty_placeholder">Tus playlists y artistas favoritos aparecerán aquí.</string>
 </resources>

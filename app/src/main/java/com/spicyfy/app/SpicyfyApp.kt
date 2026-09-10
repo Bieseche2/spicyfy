@@ -1,14 +1,12 @@
 package com.spicyfy.app
 
 import android.app.Application
+import com.spicyfy.app.extractor.DownloaderImpl
+import org.schabi.newpipe.extractor.NewPipe
 
-/**
- * Classe Application do Spicyfy.
- * Ponto único pra inicializar dependências globais (rede, player, locale) no futuro.
- */
 class SpicyfyApp : Application() {
     override fun onCreate() {
         super.onCreate()
-        // TODO: inicializar container de injeção de dependência (Hilt/Koin) quando o projeto crescer
+        NewPipe.init(DownloaderImpl())
     }
 }

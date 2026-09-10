@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  Este é o idioma PADRÃO (fallback): usado se o idioma do celular
-  não tiver uma pasta values-XX correspondente. O Android escolhe
-  automaticamente a pasta certa com base no Locale do sistema —
-  não precisa de nenhuma lib extra pra isso.
--->
 <resources>
     <string name="app_name">Spicyfy</string>
 
@@ -23,4 +17,6 @@
 
     <string name="lyrics_show">MOSTRAR LETRA</string>
     <string name="lyrics_hide">OCULTAR LETRA</string>
+
+    <string name="library_empty_placeholder">Suas playlists e artistas favoritados vão aparecer aqui.</string>
 </resources>

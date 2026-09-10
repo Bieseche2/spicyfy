@@ -17,4 +17,6 @@
 
     <string name="lyrics_show">SHOW LYRICS</string>
     <string name="lyrics_hide">HIDE LYRICS</string>
+
+    <string name="library_empty_placeholder">Your playlists and favorited artists will show up here.</string>
 </resources>

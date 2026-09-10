@@ -9,7 +9,7 @@
     <application
         android:name=".SpicyfyApp"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Spicyfy">
@@ -24,7 +24,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Serviço de reprodução em segundo plano (Media3) -->
         <service
             android:name=".player.PlaybackService"
             android:exported="false"
