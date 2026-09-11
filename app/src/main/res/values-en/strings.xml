@@ -19,4 +19,10 @@
     <string name="lyrics_hide">HIDE LYRICS</string>
 
     <string name="library_empty_placeholder">Your playlists and favorited artists will show up here.</string>
+    <string name="playlist_track_count">%1$d songs</string>
+    <string name="new_playlist">New playlist</string>
+    <string name="playlist_name_hint">Playlist name</string>
+    <string name="add_to_playlist">Add to playlist</string>
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
 </resources>

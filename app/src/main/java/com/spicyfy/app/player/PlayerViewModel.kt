@@ -6,6 +6,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
@@ -13,10 +14,16 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.MoreExecutors
 import com.spicyfy.app.data.model.Track
+import com.spicyfy.app.lyrics.LyricLine
+import com.spicyfy.app.lyrics.LyricsRepository
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class PlayerViewModel(application: Application) : AndroidViewModel(application) {
 
     private var controller: MediaController? = null
+    private val lyricsRepository = LyricsRepository()
 
     private val _currentTrack = MutableLiveData<Track?>(null)
     val currentTrack: LiveData<Track?> = _currentTrack
@@ -27,9 +34,39 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private val _progressPercent = MutableLiveData(0)
     val progressPercent: LiveData<Int> = _progressPercent
 
+    private val _positionMs = MutableLiveData(0L)
+    val positionMs: LiveData<Long> = _positionMs
+
+    private val _positionText = MutableLiveData("0:00")
+    val positionText: LiveData<String> = _positionText
+
+    private val _durationText = MutableLiveData("0:00")
+    val durationText: LiveData<String> = _durationText
+
+    private val _lyrics = MutableLiveData<List<LyricLine>?>(null)
+    val lyrics: LiveData<List<LyricLine>?> = _lyrics
+
+    private var progressJob: Job? = null
+    private var lyricsJob: Job? = null
+
     private val playerListener = object : Player.Listener {
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             _isPlaying.value = isPlaying
+        }
+
+        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+            val item = mediaItem ?: return
+            val metadata = item.mediaMetadata
+            val track = Track(
+                id = item.mediaId,
+                title = metadata.title?.toString().orEmpty(),
+                artist = metadata.artist?.toString().orEmpty(),
+                coverUrl = metadata.artworkUri?.toString(),
+                durationMs = controller?.duration?.coerceAtLeast(0) ?: 0L,
+                sourceVideoId = item.mediaId
+            )
+            _currentTrack.value = track
+            fetchLyricsFor(track)
         }
     }
 
@@ -40,36 +77,100 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
         controllerFuture.addListener(
             {
                 controller = controllerFuture.get().also { it.addListener(playerListener) }
+                startProgressLoop()
             },
             MoreExecutors.directExecutor()
         )
     }
 
-    fun play(track: Track) {
-        val mediaItem = MediaItem.Builder()
-            .setMediaId(track.sourceVideoId)
-            .setMediaMetadata(
-                MediaMetadata.Builder()
-                    .setTitle(track.title)
-                    .setArtist(track.artist)
-                    .apply { track.coverUrl?.let { setArtworkUri(it.toUri()) } }
-                    .build()
-            )
-            .build()
+    fun play(tracks: List<Track>, startIndex: Int = 0) {
+        if (tracks.isEmpty()) return
+        val safeIndex = startIndex.coerceIn(0, tracks.lastIndex)
+        val mediaItems = tracks.map { it.toMediaItem() }
+        val track = tracks[safeIndex]
 
         _currentTrack.value = track
+        fetchLyricsFor(track)
+
         controller?.apply {
-            setMediaItem(mediaItem)
+            setMediaItems(mediaItems, safeIndex, 0L)
             prepare()
             play()
         }
     }
 
+    fun play(track: Track) = play(listOf(track), 0)
+
     fun togglePlayPause() {
         controller?.let { if (it.isPlaying) it.pause() else it.play() }
     }
 
+    fun nextTrack() {
+        controller?.seekToNext()
+    }
+
+    fun previousTrack() {
+        controller?.seekToPrevious()
+    }
+
+    fun seekToPercent(percent: Int) {
+        val c = controller ?: return
+        val duration = c.duration
+        if (duration > 0) {
+            c.seekTo((duration * percent / 100).coerceIn(0, duration))
+        }
+    }
+
+    private fun Track.toMediaItem(): MediaItem =
+        MediaItem.Builder()
+            .setMediaId(sourceVideoId)
+            .setMediaMetadata(
+                MediaMetadata.Builder()
+                    .setTitle(title)
+                    .setArtist(artist)
+                    .apply { coverUrl?.let { setArtworkUri(it.toUri()) } }
+                    .build()
+            )
+            .build()
+
+    private fun fetchLyricsFor(track: Track) {
+        lyricsJob?.cancel()
+        _lyrics.value = null
+        lyricsJob = viewModelScope.launch {
+            val result = runCatching {
+                lyricsRepository.fetchLyrics(track.artist, track.title, track.durationMs)
+            }.getOrNull()
+            _lyrics.value = result?.synced
+        }
+    }
+
+    private fun startProgressLoop() {
+        progressJob?.cancel()
+        progressJob = viewModelScope.launch {
+            while (true) {
+                val c = controller
+                if (c != null && c.duration > 0) {
+                    val position = c.currentPosition.coerceIn(0, c.duration)
+                    _progressPercent.value = ((position * 100) / c.duration).toInt()
+                    _positionMs.value = position
+                    _positionText.value = formatTime(position)
+                    _durationText.value = formatTime(c.duration)
+                }
+                delay(500)
+            }
+        }
+    }
+
+    private fun formatTime(ms: Long): String {
+        val totalSeconds = ms / 1000
+        val minutes = totalSeconds / 60
+        val seconds = totalSeconds % 60
+        return "%d:%02d".format(minutes, seconds)
+    }
+
     override fun onCleared() {
+        progressJob?.cancel()
+        lyricsJob?.cancel()
         controller?.release()
         controller = null
         super.onCleared()

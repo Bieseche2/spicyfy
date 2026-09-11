@@ -13,23 +13,48 @@
         android:layout_marginBottom="22dp"
         android:background="@drawable/gradient_card_1" />
 
-    <TextView
-        android:id="@+id/np_title"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Fogo Baixo"
-        android:textColor="@color/text_hi"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/np_artist"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Nômade"
-        android:textColor="@color/text_mid"
-        android:textSize="13.5sp"
-        android:layout_marginBottom="22dp" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/np_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_hi"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/np_artist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_mid"
+                android:textSize="13.5sp"
+                android:maxLines="1"
+                android:ellipsize="end" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/np_add_playlist"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@null"
+            android:contentDescription="@string/add_to_playlist"
+            android:src="@drawable/ic_add" />
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="22dp" />
 
     <LinearLayout
         android:id="@+id/np_controls_group"
@@ -37,15 +62,16 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <ProgressBar
+        <SeekBar
             android:id="@+id/np_progress"
-            style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="match_parent"
-            android:layout_height="4dp"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:progress="0"
             android:progressTint="@color/accent"
             android:progressBackgroundTint="@color/line"
-            android:progress="38"
-            android:layout_marginBottom="6dp" />
+            android:thumbTint="@color/accent"
+            android:layout_marginBottom="2dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,19 +80,21 @@
             android:layout_marginBottom="22dp">
 
             <TextView
+                android:id="@+id/np_time_current"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="1:24"
+                android:text="0:00"
                 android:textColor="@color/text_low"
                 android:textSize="11sp" />
 
             <TextView
+                android:id="@+id/np_time_total"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:text="3:41"
+                android:text="0:00"
                 android:textColor="@color/text_low"
                 android:textSize="11sp" />
         </LinearLayout>

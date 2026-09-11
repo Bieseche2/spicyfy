@@ -20,12 +20,17 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private val playerViewModel: PlayerViewModel by activityViewModels()
     private val musicSource = YoutubeMusicSource()
     private var searchJob: Job? = null
+    private lateinit var adapter: TrackAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val b = FragmentSearchBinding.bind(view)
 
-        val adapter = TrackAdapter { track -> playerViewModel.play(track) }
+        adapter = TrackAdapter { track ->
+            val queue = adapter.currentList
+            val startIndex = queue.indexOf(track).coerceAtLeast(0)
+            playerViewModel.play(queue, startIndex)
+        }
         b.searchResults.layoutManager = LinearLayoutManager(requireContext())
         b.searchResults.adapter = adapter
 
