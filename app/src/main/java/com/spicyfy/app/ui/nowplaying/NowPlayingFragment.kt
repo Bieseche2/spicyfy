@@ -110,8 +110,8 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         }
 
         if (activeIndex >= 0 && activeIndex < b.npLyricsContainer.childCount) {
-            val alvo = b.npLyricsContainer.getChildAt(activeIndex)
-            b.npLyricsScroll.smoothScrollTo(0, target.top - 100)
+            val destino = b.npLyricsContainer.getChildAt(activeIndex)
+            b.npLyricsScroll.smoothScrollTo(0, destino.top - 100)
         }
     }
 

@@ -34,25 +34,25 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<BottomNavigationView>(R.id.bottom_navigation).setOnItemSelectedListener { item ->
-            val alvo = when (item.itemId) {
+            val destino = when (item.itemId) {
                 R.id.nav_home -> homeFragment
                 R.id.nav_search -> searchFragment
                 R.id.nav_now_playing -> nowPlayingFragment
                 R.id.nav_library -> libraryFragment
                 else -> return@setOnItemSelectedListener false
             }
-            switchTo(target)
+            switchTo(destino)
             true
         }
     }
 
-    private fun switchTo(target: Fragment) {
-        if (alvo === activeFragment) return
+    private fun switchTo(destino: Fragment) {
+        if (destino === activeFragment) return
         supportFragmentManager.beginTransaction()
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .hide(activeFragment)
-            .show(target)
+            .show(destino)
             .commit()
-        activeFragment = target
+        activeFragment = destino
     }
 }
