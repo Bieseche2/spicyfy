@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="132dp"
+    android:layout_width="104dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginEnd="14dp">
+    android:layout_marginEnd="12dp">
 
     <View
         android:id="@+id/track_cover"
-        android:layout_width="132dp"
-        android:layout_height="132dp"
+        android:layout_width="104dp"
+        android:layout_height="104dp"
         android:background="@drawable/gradient_card_2"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="7dp" />
 
     <TextView
         android:id="@+id/track_title"
@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:text="Mistura da Semana"
         android:textColor="@color/text_hi"
-        android:textSize="13sp"
+        android:textSize="12.5sp"
         android:textStyle="bold"
         android:maxLines="1"
         android:ellipsize="end" />
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:text="Atualizada segunda"
         android:textColor="@color/text_low"
-        android:textSize="11.5sp"
+        android:textSize="11sp"
         android:maxLines="1"
         android:ellipsize="end" />
 </LinearLayout>

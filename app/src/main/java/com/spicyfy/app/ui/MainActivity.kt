@@ -50,6 +50,17 @@ class MainActivity : AppCompatActivity() {
         findViewById<BottomNavigationView>(R.id.bottom_navigation).selectedItemId = R.id.nav_now_playing
     }
 
+    fun openPlaylist(playlistId: String) {
+        supportFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                android.R.anim.fade_in, android.R.anim.fade_out,
+                android.R.anim.fade_in, android.R.anim.fade_out
+            )
+            .add(R.id.fragment_container, com.spicyfy.app.ui.library.PlaylistDetailFragment.newInstance(playlistId))
+            .addToBackStack("playlist_detail")
+            .commit()
+    }
+
     private fun switchTo(destino: Fragment) {
         if (destino === activeFragment) return
         supportFragmentManager.beginTransaction()

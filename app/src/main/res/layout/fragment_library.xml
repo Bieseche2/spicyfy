@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,7 +23,7 @@
                 android:layout_weight="1"
                 android:text="@string/nav_library"
                 android:textColor="@color/text_hi"
-                android:textSize="22sp"
+                android:textSize="19sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -31,10 +31,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/new_playlist"
-                android:textColor="@color/accent"
-                android:textSize="13sp"
+                android:textColor="@color/bg_deep"
+                android:textSize="12sp"
                 android:textStyle="bold"
-                android:padding="8dp" />
+                android:background="@drawable/accent_pill_bg"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="8dp" />
         </LinearLayout>
 
         <TextView
@@ -50,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:paddingBottom="90dp"
+            android:paddingBottom="96dp"
             android:clipToPadding="false" />
 
     </LinearLayout>

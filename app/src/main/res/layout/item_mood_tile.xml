@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="0dp"
-    android:layout_height="76dp"
+    android:layout_height="64dp"
     android:layout_columnWeight="1"
     android:layout_margin="4dp"
     android:background="@drawable/gradient_card_3">
@@ -10,9 +10,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
-        android:layout_margin="10dp"
+        android:layout_margin="9dp"
         android:text="Intenso"
         android:textColor="@color/text_hi"
-        android:textSize="14.5sp"
+        android:textSize="13sp"
         android:textStyle="bold" />
 </FrameLayout>

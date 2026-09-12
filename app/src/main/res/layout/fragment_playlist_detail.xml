@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_deep">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="96dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/pl_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/back_to_library"
+                android:textColor="@color/text_mid"
+                android:textSize="13sp"
+                android:padding="4dp"
+                android:layout_marginBottom="12dp" />
+
+            <ImageView
+                android:id="@+id/pl_cover"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/gradient_card_1"
+                android:clipToOutline="true"
+                android:contentDescription="@null"
+                android:layout_marginBottom="14dp" />
+
+            <TextView
+                android:id="@+id/pl_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_hi"
+                android:textSize="21sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                tools:text="Rota Noturna" />
+
+            <TextView
+                android:id="@+id/pl_meta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_low"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="18dp">
+
+            <ImageButton
+                android:id="@+id/pl_shuffle"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/circle_button_bg"
+                android:contentDescription="@string/shuffle_play"
+                android:src="@drawable/ic_shuffle" />
+
+            <ImageButton
+                android:id="@+id/pl_play"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@drawable/circle_accent_bg"
+                android:contentDescription="@string/nav_now_playing"
+                android:src="@drawable/ic_play" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/pl_tracks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="12dp"
+            android:nestedScrollingEnabled="false" />
+
+    </LinearLayout>
+</ScrollView>

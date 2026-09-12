@@ -35,8 +35,8 @@ class TrackAdapter(
         holder.artist.text = track.artist
         holder.cover.load(track.coverUrl) {
             crossfade(true)
-            placeholder(R.drawable.gradient_card_1)
-            error(R.drawable.gradient_card_1)
+            placeholder(R.drawable.gradient_card_small)
+            error(R.drawable.gradient_card_small)
         }
         holder.itemView.setOnClickListener { onTrackClick(track) }
     }

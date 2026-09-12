@@ -9,22 +9,17 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.spicyfy.app.R
 import com.spicyfy.app.databinding.FragmentLibraryBinding
-import com.spicyfy.app.player.PlayerViewModel
 
 class LibraryFragment : Fragment(R.layout.fragment_library) {
 
     private val libraryViewModel: LibraryViewModel by activityViewModels()
-    private val playerViewModel: PlayerViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val b = FragmentLibraryBinding.bind(view)
 
         val adapter = PlaylistAdapter { playlist ->
-            if (playlist.tracks.isNotEmpty()) {
-                playerViewModel.play(playlist.tracks, startIndex = 0)
-                (activity as? com.spicyfy.app.ui.MainActivity)?.showNowPlaying()
-            }
+            (activity as? com.spicyfy.app.ui.MainActivity)?.openPlaylist(playlist.id)
         }
         b.libraryPlaylists.layoutManager = LinearLayoutManager(requireContext())
         b.libraryPlaylists.adapter = adapter

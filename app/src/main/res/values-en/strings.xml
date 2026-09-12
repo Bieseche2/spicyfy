@@ -26,4 +26,7 @@
     <string name="create">Create</string>
     <string name="cancel">Cancel</string>
     <string name="lyrics_not_found">Lyrics not found for this song.</string>
+    <string name="back_to_library">Back to Library</string>
+    <string name="shuffle_play">Shuffle play</string>
+    <string name="tracks_count">%1$d songs</string>
 </resources>

@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="110dp"
+    android:layout_width="92dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:layout_marginEnd="14dp">
+    android:layout_marginEnd="12dp">
 
     <View
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="84dp"
+        android:layout_height="84dp"
         android:background="@drawable/artist_circle_bg"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="7dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Nômade"
         android:textColor="@color/text_hi"
-        android:textSize="13sp"
+        android:textSize="12.5sp"
         android:textStyle="bold"
         android:gravity="center"
         android:maxLines="1"
