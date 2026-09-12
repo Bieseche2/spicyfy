@@ -2,9 +2,11 @@ package com.spicyfy.app.ui.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil3.load
 import com.spicyfy.app.R
 import com.spicyfy.app.data.model.Track
 
@@ -13,6 +15,7 @@ class TrackAdapter(
 ) : ListAdapter<Track, TrackAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     class ViewHolder(itemView: android.view.View) : RecyclerView.ViewHolder(itemView) {
+        val cover: ImageView = itemView.findViewById(R.id.result_cover)
         val title: android.widget.TextView = itemView.findViewById(R.id.result_title)
         val artist: android.widget.TextView = itemView.findViewById(R.id.result_artist)
     }
@@ -27,6 +30,11 @@ class TrackAdapter(
         val track = getItem(position)
         holder.title.text = track.title
         holder.artist.text = track.artist
+        holder.cover.load(track.coverUrl) {
+            crossfade(true)
+            placeholder(R.drawable.gradient_card_1)
+            error(R.drawable.gradient_card_1)
+        }
         holder.itemView.setOnClickListener { onTrackClick(track) }
     }
 

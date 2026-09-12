@@ -46,6 +46,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun showNowPlaying() {
+        findViewById<BottomNavigationView>(R.id.bottom_navigation).selectedItemId = R.id.nav_now_playing
+    }
+
     private fun switchTo(destino: Fragment) {
         if (destino === activeFragment) return
         supportFragmentManager.beginTransaction()

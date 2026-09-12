@@ -2,6 +2,7 @@ package com.spicyfy.app.player
 
 import android.app.Application
 import android.content.ComponentName
+import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -20,10 +21,14 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+private const val TAG = "PlayerViewModel"
+
 class PlayerViewModel(application: Application) : AndroidViewModel(application) {
 
     private var controller: MediaController? = null
     private val lyricsRepository = LyricsRepository()
+
+    private var pendingPlay: Pair<List<Track>, Int>? = null
 
     private val _currentTrack = MutableLiveData<Track?>(null)
     val currentTrack: LiveData<Track?> = _currentTrack
@@ -45,6 +50,9 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
 
     private val _lyrics = MutableLiveData<List<LyricLine>?>(null)
     val lyrics: LiveData<List<LyricLine>?> = _lyrics
+
+    private val _isReady = MutableLiveData(false)
+    val isReady: LiveData<Boolean> = _isReady
 
     private var progressJob: Job? = null
     private var lyricsJob: Job? = null
@@ -68,6 +76,10 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
             _currentTrack.value = track
             fetchLyricsFor(track)
         }
+
+        override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
+            Log.e(TAG, "Erro de reprodução: ${error.errorCodeName} - ${error.message}", error)
+        }
     }
 
     init {
@@ -76,8 +88,20 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
         val controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
         controllerFuture.addListener(
             {
-                controller = controllerFuture.get().also { it.addListener(playerListener) }
-                startProgressLoop()
+                try {
+                    controller = controllerFuture.get().also { it.addListener(playerListener) }
+                    _isReady.value = true
+                    startProgressLoop()
+                    Log.d(TAG, "MediaController conectado com sucesso")
+
+                    pendingPlay?.let { (tracks, index) ->
+                        Log.d(TAG, "Executando play() pendente pra: ${tracks.getOrNull(index)?.title}")
+                        pendingPlay = null
+                        playInternal(tracks, index)
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Falha ao conectar o MediaController", e)
+                }
             },
             MoreExecutors.directExecutor()
         )
@@ -85,6 +109,17 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
 
     fun play(tracks: List<Track>, startIndex: Int = 0) {
         if (tracks.isEmpty()) return
+        if (controller == null) {
+            Log.d(TAG, "Controller ainda não pronto, guardando pedido de play()")
+            pendingPlay = tracks to startIndex
+            return
+        }
+        playInternal(tracks, startIndex)
+    }
+
+    fun play(track: Track) = play(listOf(track), 0)
+
+    private fun playInternal(tracks: List<Track>, startIndex: Int) {
         val safeIndex = startIndex.coerceIn(0, tracks.lastIndex)
         val mediaItems = tracks.map { it.toMediaItem() }
         val track = tracks[safeIndex]
@@ -98,8 +133,6 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
             play()
         }
     }
-
-    fun play(track: Track) = play(listOf(track), 0)
 
     fun togglePlayPause() {
         controller?.let { if (it.isPlaying) it.pause() else it.play() }

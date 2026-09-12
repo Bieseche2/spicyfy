@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.view.children
+import coil3.load
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.spicyfy.app.R
@@ -60,6 +61,11 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
             if (track != null) {
                 b.npTitle.text = track.title
                 b.npArtist.text = track.artist
+                b.npCover.load(track.coverUrl) {
+                    crossfade(true)
+                    placeholder(R.drawable.gradient_card_1)
+                    error(R.drawable.gradient_card_1)
+                }
             }
         }
 

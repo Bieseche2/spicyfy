@@ -62,4 +62,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.4")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.4")
     implementation("androidx.recyclerview:recyclerview:1.4.0")
+
+    implementation("io.coil-kt.coil3:coil:3.6.2")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.6.2")
 }

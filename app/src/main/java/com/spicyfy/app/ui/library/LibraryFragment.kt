@@ -1,9 +1,9 @@
 package com.spicyfy.app.ui.library
 
+import androidx.appcompat.app.AlertDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +23,7 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
         val adapter = PlaylistAdapter { playlist ->
             if (playlist.tracks.isNotEmpty()) {
                 playerViewModel.play(playlist.tracks, startIndex = 0)
+                (activity as? com.spicyfy.app.ui.MainActivity)?.showNowPlaying()
             }
         }
         b.libraryPlaylists.layoutManager = LinearLayoutManager(requireContext())

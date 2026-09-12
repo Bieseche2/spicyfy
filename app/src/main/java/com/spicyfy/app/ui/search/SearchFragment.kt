@@ -30,6 +30,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             val queue = adapter.currentList
             val startIndex = queue.indexOf(track).coerceAtLeast(0)
             playerViewModel.play(queue, startIndex)
+            (activity as? com.spicyfy.app.ui.MainActivity)?.showNowPlaying()
         }
         b.searchResults.layoutManager = LinearLayoutManager(requireContext())
         b.searchResults.adapter = adapter
