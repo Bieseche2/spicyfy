@@ -45,7 +45,10 @@ class LyricsRepository {
 
     suspend fun fetchLyrics(artist: String, title: String, durationMs: Long): LyricsResult? =
         withContext(Dispatchers.IO) {
-            val results = runCatching { api.search(trackName = title, artistName = artist) }
+            val cleanTitle = cleanTrackTitle(title)
+            val cleanArtist = cleanArtistName(artist)
+
+            val results = runCatching { api.search(trackName = cleanTitle, artistName = cleanArtist) }
                 .getOrNull()
                 ?.filterNot { it.instrumental }
                 ?: return@withContext null
@@ -65,6 +68,18 @@ class LyricsRepository {
                 plain = best.plainLyrics
             )
         }
+
+    private fun cleanTrackTitle(raw: String): String {
+        return raw
+            .replace(Regex("""[(\[][^)\]]*(official|audio|video|lyrics?|visualizer|hd|4k|remaster\w*)[^)\]]*[)\]]""", RegexOption.IGNORE_CASE), "")
+            .replace(Regex("""\b(feat\.?|ft\.?)\s.+$""", RegexOption.IGNORE_CASE), "")
+            .replace(Regex("""\s{2,}"""), " ")
+            .trim()
+    }
+
+    private fun cleanArtistName(raw: String): String {
+        return raw.removeSuffix(" - Topic").trim()
+    }
 
     private fun parseLrc(lrc: String): List<LyricLine> {
         val lineRegex = Regex("""\[(\d{1,2}):(\d{2}(?:\.\d{1,3})?)]([^\n\[]*)""")

@@ -157,6 +157,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private fun Track.toMediaItem(): MediaItem =
         MediaItem.Builder()
             .setMediaId(sourceVideoId)
+            .setUri("spicyfy://$sourceVideoId") // placeholder — resolvido de verdade no PlaybackService
             .setMediaMetadata(
                 MediaMetadata.Builder()
                     .setTitle(title)

@@ -91,7 +91,16 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
 
     private fun renderLyrics(b: FragmentNowPlayingBinding) {
         b.npLyricsContainer.removeAllViews()
-        if (currentLyrics.isEmpty()) return
+        if (currentLyrics.isEmpty()) {
+            val emptyView = TextView(requireContext()).apply {
+                text = getString(R.string.lyrics_not_found)
+                setTextColor(resources.getColor(R.color.text_low, null))
+                textSize = 14f
+                setPadding(0, 24, 0, 0)
+            }
+            b.npLyricsContainer.addView(emptyView)
+            return
+        }
         currentLyrics.forEach { line ->
             val textView = TextView(requireContext()).apply {
                 text = line.text
