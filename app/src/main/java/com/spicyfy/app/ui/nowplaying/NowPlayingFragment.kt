@@ -7,6 +7,9 @@ import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.view.children
 import coil3.load
+import coil3.request.crossfade
+import coil3.request.error
+import coil3.request.placeholder
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.spicyfy.app.R
