@@ -35,6 +35,11 @@ class YoutubeMusicSource {
             .mapNotNull { it.toTrackOrNull() }
     }
 
+    suspend fun genericRecommendations(): List<Track> = withContext(Dispatchers.IO) {
+        val seeds = listOf("músicas mais tocadas 2026", "top hits internacional", "as melhores do momento")
+        search(seeds.random())
+    }
+
     private fun watchUrlFor(videoId: String) = "https://www.youtube.com/watch?v=$videoId"
 
     private fun StreamInfoItem.toTrackOrNull(): Track? {

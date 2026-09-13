@@ -22,6 +22,17 @@
 
         <TextView
             style="@style/SectionTitle"
+            android:text="@string/home_section_recommended" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/home_recommended_tracks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:layout_marginBottom="22dp" />
+
+        <TextView
+            style="@style/SectionTitle"
             android:text="@string/home_section_continue_listening" />
 
         <TextView

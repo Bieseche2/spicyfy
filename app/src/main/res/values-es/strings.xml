@@ -8,6 +8,7 @@
     <string name="nav_library">Biblioteca</string>
 
     <string name="home_greeting">Buenas noches</string>
+    <string name="home_section_recommended">Recomendado para ti</string>
     <string name="home_section_continue_listening">Seguir escuchando</string>
     <string name="home_recent_empty">Reproduce una canción para verla aquí.</string>
     <string name="home_playlists_empty">Aún no tienes playlists. ¡Crea una en Biblioteca!</string>

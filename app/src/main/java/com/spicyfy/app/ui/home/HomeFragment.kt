@@ -21,19 +21,29 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         val b = FragmentHomeBinding.bind(view)
 
         b.homePlaylists.layoutManager = LinearLayoutManager(requireContext())
-
         val playlistAdapter = PlaylistAdapter { playlist ->
             (activity as? com.spicyfy.app.ui.MainActivity)?.openPlaylist(playlist.id)
         }
         b.homePlaylists.adapter = playlistAdapter
 
+        b.homeRecommendedTracks.layoutManager = LinearLayoutManager(
+            requireContext(), RecyclerView.HORIZONTAL, false
+        )
+        b.homeRecentTracks.layoutManager = LinearLayoutManager(
+            requireContext(), RecyclerView.HORIZONTAL, false
+        )
+
+        homeViewModel.recommended.observe(viewLifecycleOwner) { tracks ->
+            b.homeRecommendedTracks.adapter = HomeTrackAdapter(tracks) { index ->
+                playerViewModel.play(tracks, index)
+                (activity as? com.spicyfy.app.ui.MainActivity)?.showNowPlaying()
+            }
+        }
+
         homeViewModel.recentTracks.observe(viewLifecycleOwner) { tracks ->
             b.homeRecentEmpty.visibility = if (tracks.isEmpty()) View.VISIBLE else View.GONE
             b.homeRecentTracks.visibility = if (tracks.isEmpty()) View.GONE else View.VISIBLE
             if (tracks.isNotEmpty()) {
-                b.homeRecentTracks.layoutManager = LinearLayoutManager(
-                    requireContext(), RecyclerView.HORIZONTAL, false
-                )
                 b.homeRecentTracks.adapter = HomeTrackAdapter(tracks) { index ->
                     playerViewModel.play(tracks, index)
                     (activity as? com.spicyfy.app.ui.MainActivity)?.showNowPlaying()

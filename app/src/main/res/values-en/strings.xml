@@ -8,6 +8,7 @@
     <string name="nav_library">Library</string>
 
     <string name="home_greeting">Good evening</string>
+    <string name="home_section_recommended">Recommended for you</string>
     <string name="home_section_continue_listening">Continue listening</string>
     <string name="home_recent_empty">Play a song to see it here.</string>
     <string name="home_playlists_empty">You don\'t have any playlists yet. Create one in Library!</string>
