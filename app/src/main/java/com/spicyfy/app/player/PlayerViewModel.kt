@@ -2,7 +2,6 @@ package com.spicyfy.app.player
 
 import android.app.Application
 import android.content.ComponentName
-import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -15,18 +14,23 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.MoreExecutors
 import com.spicyfy.app.data.model.Track
+import com.spicyfy.app.data.repository.DownloadRepository
+import com.spicyfy.app.data.repository.RecentlyPlayedRepository
+import com.spicyfy.app.extractor.YoutubeMusicSource
 import com.spicyfy.app.lyrics.LyricLine
 import com.spicyfy.app.lyrics.LyricsRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-private const val TAG = "PlayerViewModel"
-
 class PlayerViewModel(application: Application) : AndroidViewModel(application) {
 
     private var controller: MediaController? = null
     private val lyricsRepository = LyricsRepository()
+    private val musicSource = YoutubeMusicSource()
+    private val downloadRepository = DownloadRepository(application)
+    private val trackDownloader = TrackDownloader(application)
+    private val recentlyPlayedRepository = RecentlyPlayedRepository(application)
 
     private var pendingPlay: Pair<List<Track>, Int>? = null
 
@@ -51,8 +55,11 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private val _lyrics = MutableLiveData<List<LyricLine>?>(null)
     val lyrics: LiveData<List<LyricLine>?> = _lyrics
 
-    private val _isReady = MutableLiveData(false)
-    val isReady: LiveData<Boolean> = _isReady
+    private val _isDownloaded = MutableLiveData(false)
+    val isDownloaded: LiveData<Boolean> = _isDownloaded
+
+    private val _isDownloading = MutableLiveData(false)
+    val isDownloading: LiveData<Boolean> = _isDownloading
 
     private var progressJob: Job? = null
     private var lyricsJob: Job? = null
@@ -73,12 +80,13 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
                 durationMs = controller?.duration?.coerceAtLeast(0) ?: 0L,
                 sourceVideoId = item.mediaId
             )
-            _currentTrack.value = track
-            fetchLyricsFor(track)
+            onTrackChanged(track)
         }
 
-        override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
-            Log.e(TAG, "Erro de reprodução: ${error.errorCodeName} - ${error.message}", error)
+        override fun onPlaybackStateChanged(playbackState: Int) {
+            if (playbackState == Player.STATE_ENDED) {
+                maybeAutoplay()
+            }
         }
     }
 
@@ -88,19 +96,12 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
         val controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
         controllerFuture.addListener(
             {
-                try {
-                    controller = controllerFuture.get().also { it.addListener(playerListener) }
-                    _isReady.value = true
-                    startProgressLoop()
-                    Log.d(TAG, "MediaController conectado com sucesso")
+                controller = controllerFuture.get().also { it.addListener(playerListener) }
+                startProgressLoop()
 
-                    pendingPlay?.let { (tracks, index) ->
-                        Log.d(TAG, "Executando play() pendente pra: ${tracks.getOrNull(index)?.title}")
-                        pendingPlay = null
-                        playInternal(tracks, index)
-                    }
-                } catch (e: Exception) {
-                    Log.e(TAG, "Falha ao conectar o MediaController", e)
+                pendingPlay?.let { (tracks, index) ->
+                    pendingPlay = null
+                    playInternal(tracks, index)
                 }
             },
             MoreExecutors.directExecutor()
@@ -110,7 +111,6 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     fun play(tracks: List<Track>, startIndex: Int = 0) {
         if (tracks.isEmpty()) return
         if (controller == null) {
-            Log.d(TAG, "Controller ainda não pronto, guardando pedido de play()")
             pendingPlay = tracks to startIndex
             return
         }
@@ -118,21 +118,6 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun play(track: Track) = play(listOf(track), 0)
-
-    private fun playInternal(tracks: List<Track>, startIndex: Int) {
-        val safeIndex = startIndex.coerceIn(0, tracks.lastIndex)
-        val mediaItems = tracks.map { it.toMediaItem() }
-        val track = tracks[safeIndex]
-
-        _currentTrack.value = track
-        fetchLyricsFor(track)
-
-        controller?.apply {
-            setMediaItems(mediaItems, safeIndex, 0L)
-            prepare()
-            play()
-        }
-    }
 
     fun togglePlayPause() {
         controller?.let { if (it.isPlaying) it.pause() else it.play() }
@@ -154,10 +139,58 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
+    fun toggleDownload() {
+        val track = _currentTrack.value ?: return
+        if (_isDownloaded.value == true) {
+            downloadRepository.delete(track.sourceVideoId)
+            _isDownloaded.value = false
+            return
+        }
+        if (_isDownloading.value == true) return
+
+        _isDownloading.value = true
+        viewModelScope.launch {
+            val success = trackDownloader.download(track)
+            _isDownloading.value = false
+            _isDownloaded.value = success
+        }
+    }
+
+    private fun playInternal(tracks: List<Track>, startIndex: Int) {
+        val safeIndex = startIndex.coerceIn(0, tracks.lastIndex)
+        val mediaItems = tracks.map { it.toMediaItem() }
+        onTrackChanged(tracks[safeIndex])
+
+        controller?.apply {
+            setMediaItems(mediaItems, safeIndex, 0L)
+            prepare()
+            play()
+        }
+    }
+
+    private fun onTrackChanged(track: Track) {
+        _currentTrack.value = track
+        _isDownloaded.value = downloadRepository.isDownloaded(track.sourceVideoId)
+        fetchLyricsFor(track)
+        recentlyPlayedRepository.record(track)
+    }
+
+    private fun maybeAutoplay() {
+        val c = controller ?: return
+        if (c.hasNextMediaItem()) return
+        val lastVideoId = c.currentMediaItem?.mediaId ?: return
+        viewModelScope.launch {
+            val related = runCatching { musicSource.relatedTracks(lastVideoId) }.getOrDefault(emptyList())
+            if (related.isNotEmpty()) {
+                playInternal(related, 0)
+            }
+        }
+    }
+
     private fun Track.toMediaItem(): MediaItem =
         MediaItem.Builder()
             .setMediaId(sourceVideoId)
-            .setUri("spicyfy://$sourceVideoId") // placeholder — resolvido de verdade no PlaybackService
+            .setUri("spicyfy://$sourceVideoId")
             .setMediaMetadata(
                 MediaMetadata.Builder()
                     .setTitle(title)

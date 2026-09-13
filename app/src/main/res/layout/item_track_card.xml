@@ -5,18 +5,20 @@
     android:orientation="vertical"
     android:layout_marginEnd="12dp">
 
-    <View
+    <ImageView
         android:id="@+id/track_cover"
         android:layout_width="104dp"
         android:layout_height="104dp"
+        android:scaleType="centerCrop"
         android:background="@drawable/gradient_card_2"
+        android:clipToOutline="true"
+        android:contentDescription="@null"
         android:layout_marginBottom="7dp" />
 
     <TextView
         android:id="@+id/track_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Mistura da Semana"
         android:textColor="@color/text_hi"
         android:textSize="12.5sp"
         android:textStyle="bold"
@@ -27,7 +29,6 @@
         android:id="@+id/track_subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Atualizada segunda"
         android:textColor="@color/text_low"
         android:textSize="11sp"
         android:maxLines="1"

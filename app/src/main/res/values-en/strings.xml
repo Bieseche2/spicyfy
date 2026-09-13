@@ -8,9 +8,9 @@
     <string name="nav_library">Library</string>
 
     <string name="home_greeting">Good evening</string>
-    <string name="home_section_made_for_you">Made for you</string>
-    <string name="home_section_followed_artists">Artists you follow</string>
     <string name="home_section_continue_listening">Continue listening</string>
+    <string name="home_recent_empty">Play a song to see it here.</string>
+    <string name="home_playlists_empty">You don\'t have any playlists yet. Create one in Library!</string>
 
     <string name="search_hint">Songs, artists or playlists</string>
     <string name="search_moods_title">Browse by mood</string>
@@ -29,4 +29,7 @@
     <string name="back_to_library">Back to Library</string>
     <string name="shuffle_play">Shuffle play</string>
     <string name="tracks_count">%1$d songs</string>
+    <string name="download">Download</string>
+    <string name="downloaded">Downloaded</string>
+    <string name="remove_download">Remove download</string>
 </resources>

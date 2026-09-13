@@ -8,9 +8,9 @@
     <string name="nav_library">Biblioteca</string>
 
     <string name="home_greeting">Boa noite</string>
-    <string name="home_section_made_for_you">Feito pra você</string>
-    <string name="home_section_followed_artists">Artistas que você segue</string>
     <string name="home_section_continue_listening">Continue ouvindo</string>
+    <string name="home_recent_empty">Toque em alguma música pra ela aparecer aqui.</string>
+    <string name="home_playlists_empty">Você ainda não tem playlists. Cria uma na Biblioteca!</string>
 
     <string name="search_hint">Músicas, artistas ou playlists</string>
     <string name="search_moods_title">Navegue por clima</string>
@@ -29,4 +29,7 @@
     <string name="back_to_library">Voltar pra Biblioteca</string>
     <string name="shuffle_play">Tocar aleatório</string>
     <string name="tracks_count">%1$d músicas</string>
+    <string name="download">Baixar</string>
+    <string name="downloaded">Baixada</string>
+    <string name="remove_download">Remover download</string>
 </resources>

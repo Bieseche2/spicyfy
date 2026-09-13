@@ -22,13 +22,20 @@ class YoutubeMusicSource {
     }
 
     suspend fun resolveAudioStreamUrl(videoId: String): String? = withContext(Dispatchers.IO) {
-        val watchUrl = "https://www.youtube.com/watch?v=$videoId"
-        val info = StreamInfo.getInfo(youtube, watchUrl)
-
+        val info = StreamInfo.getInfo(youtube, watchUrlFor(videoId))
         info.audioStreams
             .maxByOrNull { it.averageBitrate }
             ?.content
     }
+
+    suspend fun relatedTracks(videoId: String): List<Track> = withContext(Dispatchers.IO) {
+        val info = StreamInfo.getInfo(youtube, watchUrlFor(videoId))
+        info.relatedItems
+            .filterIsInstance<StreamInfoItem>()
+            .mapNotNull { it.toTrackOrNull() }
+    }
+
+    private fun watchUrlFor(videoId: String) = "https://www.youtube.com/watch?v=$videoId"
 
     private fun StreamInfoItem.toTrackOrNull(): Track? {
         val videoId = extractVideoId(url) ?: return null
