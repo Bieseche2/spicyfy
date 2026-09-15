@@ -1,5 +1,7 @@
 package com.spicyfy.app.ui.nowplaying
 
+import android.animation.ObjectAnimator
+import android.view.animation.LinearInterpolator
 import androidx.appcompat.app.AlertDialog
 import android.os.Bundle
 import android.view.View
@@ -27,11 +29,18 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     private var isUserSeeking = false
     private var currentLyrics: List<LyricLine> = emptyList()
     private var highlightedLineIndex = -1
+    private var vinylAnimator: ObjectAnimator? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val b = FragmentNowPlayingBinding.bind(view)
         binding = b
+
+        vinylAnimator = ObjectAnimator.ofFloat(b.npVinylGroup, View.ROTATION, 0f, 360f).apply {
+            duration = 6000
+            repeatCount = ObjectAnimator.INFINITE
+            interpolator = LinearInterpolator()
+        }
 
         b.npLyricsToggle.setOnClickListener {
             val showingLyrics = b.npLyricsScroll.visibility == View.VISIBLE
@@ -46,6 +55,20 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         b.npNext.setOnClickListener { playerViewModel.nextTrack() }
         b.npPrevious.setOnClickListener { playerViewModel.previousTrack() }
         b.npAddPlaylist.setOnClickListener { showAddToPlaylistDialog() }
+        b.npDownload.setOnClickListener { playerViewModel.toggleDownload() }
+
+        playerViewModel.isDownloading.observe(viewLifecycleOwner) { downloading ->
+            b.npDownload.isEnabled = !downloading
+            b.npDownload.alpha = if (downloading) 0.5f else 1f
+        }
+        playerViewModel.isDownloaded.observe(viewLifecycleOwner) { downloaded ->
+            b.npDownload.setImageResource(
+                if (downloaded) R.drawable.ic_download_done else R.drawable.ic_download
+            )
+            b.npDownload.contentDescription = getString(
+                if (downloaded) R.string.remove_download else R.string.download
+            )
+        }
 
         b.npProgress.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {}
@@ -58,6 +81,11 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
 
         playerViewModel.isPlaying.observe(viewLifecycleOwner) { playing ->
             b.npPlayPause.setImageResource(if (playing) R.drawable.ic_pause else R.drawable.ic_play)
+            if (playing) {
+                if (vinylAnimator?.isStarted == true) vinylAnimator?.resume() else vinylAnimator?.start()
+            } else {
+                vinylAnimator?.pause()
+            }
         }
 
         playerViewModel.currentTrack.observe(viewLifecycleOwner) { track ->
@@ -68,6 +96,16 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                     crossfade(true)
                     placeholder(R.drawable.gradient_card_1)
                     error(R.drawable.gradient_card_1)
+                }
+                b.npVinyl.load(track.coverUrl) {
+                    crossfade(true)
+                    placeholder(R.drawable.gradient_card_2)
+                    error(R.drawable.gradient_card_2)
+                }
+                b.npVinylBadge.load(track.coverUrl) {
+                    crossfade(true)
+                    placeholder(R.drawable.gradient_card_small)
+                    error(R.drawable.gradient_card_small)
                 }
             }
         }
@@ -162,6 +200,8 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        vinylAnimator?.cancel()
+        vinylAnimator = null
         binding = null
     }
 }

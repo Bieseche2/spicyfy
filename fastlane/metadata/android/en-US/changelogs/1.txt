@@ -1,0 +1,11 @@
+Initial stable release of Spicyfy.
+
+- Music playback
+- Music search
+- Playlists
+- Favorites
+- Lyrics support
+- Offline downloads
+- Background playback
+- Personalized recommendations
+- New polished user interface

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginBottom="22dp">
+
+    <TextView
+        android:id="@+id/row_title"
+        style="@style/SectionTitle"
+        tools:text="Baseado em Fogo Baixo" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/row_tracks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false" />
+
+</LinearLayout>

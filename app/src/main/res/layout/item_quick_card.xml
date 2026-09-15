@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="0dp"
+    android:layout_width="match_parent"
     android:layout_height="52dp"
-    android:layout_columnWeight="1"
     android:layout_margin="4dp"
     android:background="@drawable/rounded_card_bg"
     android:orientation="horizontal"
     android:gravity="center_vertical"
     android:padding="6dp">
 
-    <View
+    <ImageView
+        android:id="@+id/quick_cover"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:background="@drawable/gradient_card_1" />
+        android:scaleType="centerCrop"
+        android:background="@drawable/gradient_card_small"
+        android:clipToOutline="true"
+        android:contentDescription="@null" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/quick_title"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:layout_marginStart="9dp"
-        android:text="Favoritas"
         android:textColor="@color/text_hi"
         android:textSize="12.5sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:ellipsize="end" />
 </LinearLayout>

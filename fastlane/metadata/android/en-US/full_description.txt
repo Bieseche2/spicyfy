@@ -1,0 +1,16 @@
+Spicyfy is a free and open-source music player for Android, designed to provide a lightweight and polished listening experience.
+
+Features:
+- Music playback
+- Music search
+- Playlists
+- Favorites
+- Lyrics support
+- Offline downloads
+- Background playback
+- Personalized music recommendations
+- Dark and warm user interface
+
+Spicyfy is built with Kotlin and uses modern Android libraries to provide a smooth and lightweight experience.
+
+The project is open source and its source code is available on GitHub.
